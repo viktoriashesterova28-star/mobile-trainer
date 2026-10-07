@@ -506,17 +506,20 @@
     return wrap;
   }
 
-  function renderFormatScreen(format, sd) {
-    var screen;
-    if (format === "push") screen = pushScreen(sd);
-    else if (format === "banner") screen = bannerScreen(sd);
-    else if (format === "story") screen = storyScreen(sd);
-    else if (format === "offer") screen = offerScreen(sd);
-    else if (format === "notification") screen = notificationScreen(sd);
-    else if (format === "message") screen = messageScreen(sd);
-    else screen = landingScreen(sd);
-    attachPhoneTaps(screen, sd);
+  function renderFormatScreen(format, sd, staticScreen) {
+    var screen = buildFormatScreen(format, sd);
+    if (!staticScreen) attachPhoneTaps(screen, sd);
     return screen;
+  }
+
+  function buildFormatScreen(format, sd) {
+    if (format === "push") return pushScreen(sd);
+    if (format === "banner") return bannerScreen(sd);
+    if (format === "story") return storyScreen(sd);
+    if (format === "offer") return offerScreen(sd);
+    if (format === "notification") return notificationScreen(sd);
+    if (format === "message") return messageScreen(sd);
+    return landingScreen(sd);
   }
 
   // Кнопки на телефоне реагируют на тап: появляется попап, как ответ приложения
@@ -577,63 +580,31 @@
   function renderIntro() {
     var wrap = el("div", "screen layout");
 
-    // телефон с заставкой
-    var fmts = {};
-    CASES.forEach(function (c) { if (c.screen && c.screen.format) fmts[c.screen.format] = 1; });
-    var fmtCount = Object.keys(fmts).length;
+    // Левая колонка: подпись + телефон со статичным примером кейса
+    var left = el("div", "intro-phone");
+    left.appendChild(el("div", "phone-caption", "Пример задания"));
+    var example = CASES[2];
+    left.appendChild(phoneFrame(renderFormatScreen(example.screen.format, example.screen, true), example.screen.format === "story", example.screen.tint));
+    wrap.appendChild(left);
 
-    var introScreen = el("div", "intro-screen");
-    introScreen.appendChild(el("div", "intro-emoji", "📱"));
-    introScreen.appendChild(el("h1", "intro-title", TRENER_TITLE));
-    introScreen.appendChild(el("p", "intro-lead", TRENER_INTRO));
-
-    var stats = el("div", "intro-stats");
-    var statCase = el("div", "intro-stat");
-    statCase.appendChild(el("div", "stat-num", String(CASES.length)));
-    statCase.appendChild(el("div", "stat-label", "кейсов"));
-    stats.appendChild(statCase);
-    var statFmt = el("div", "intro-stat");
-    statFmt.appendChild(el("div", "stat-num", String(fmtCount)));
-    statFmt.appendChild(el("div", "stat-label", "форматов"));
-    stats.appendChild(statFmt);
-    introScreen.appendChild(stats);
-
-    introScreen.appendChild(el("div", "intro-tap", "👆 Нажми на кнопку на экране"));
-
-    var introPhone = el("div", "intro-phone");
-    introPhone.appendChild(phoneFrame(introScreen, true));
-    wrap.appendChild(introPhone);
-
-    // панель справа — коротко и по делу
+    // Правая колонка: вводная
     var panel = el("div", "panel");
-    panel.appendChild(el("h2", "panel-title", "Привет!"));
-    panel.appendChild(el("p", "panel-lead",
-      "Это тренажер для продуктовых редакторов. Учимся замечать дарк-паттерны в формулировках и подаче информации."));
+    panel.appendChild(el("div", "intro-eyebrow", "Для продуктовых редакторов"));
+    panel.appendChild(el("h1", "intro-heading", "Дарк-паттерны в тексте"));
+    panel.appendChild(el("p", "intro-body",
+      "Иногда предложение выглядит убедительно, но скрывает важное условие или обещает больше, чем получит клиент. Потренируйтесь замечать такие приемы на примерах из разных продуктов."));
+    panel.appendChild(el("div", "intro-subhead", "Как проходить"));
 
-    // определение
-    var def = el("div", "intro-def");
-    def.appendChild(el("div", "intro-def-label", "Дарк-паттерны"));
-    def.appendChild(el("div", "intro-def-text",
-      "Это приемы в тексте, которые создают у клиента неверное ожидание или подталкивают к поспешному решению. Формально все может быть правдой, но смысл искажается."));
-    panel.appendChild(def);
+    var steps = el("div", "intro-steps");
+    steps.appendChild(stepItem("1", "Прочитайте предложение и условия.", "В телефоне — сообщение для клиента. Справа — дополнительные факты и вопрос для вас."));
+    steps.appendChild(stepItem("2", "Выберите ответ.", "В каждом задании один правильный вариант."));
+    steps.appendChild(stepItem("3", "Посмотрите разбор.", "Узнайте, что в тексте корректно, а что стоит изменить и почему."));
+    panel.appendChild(steps);
 
-    // подсказка про интерактив
-    var tip = el("div", "intro-tip");
-    tip.appendChild(el("span", "intro-tip-ico", "👆"));
-    tip.appendChild(el("div", "intro-tip-text", "Кнопки на экране телефона кликабельные — нажми на любую и посмотри, как отреагирует приложение."));
-    panel.appendChild(tip);
-
-    // правила
-    var rules = el("div", "review-list");
-    var rulesTitle = el("div", "rules-title", "Как это работает");
-    panel.appendChild(rulesTitle);
-    rules.appendChild(reviewItem("Читаем текст и контекст", "На экране реклама, письмо, пуш или баннер. Оцениваем формулировку, а не оформление."));
-    rules.appendChild(reviewItem("Выбираем ожидание", "Ответьте, какое ожидание формирует текст."));
-    rules.appendChild(reviewItem("Смотрим разбор", "В чем проблема и как исправить подачу."));
-    panel.appendChild(rules);
+    panel.appendChild(el("div", "intro-note", "Не в каждом кейсе есть дарк-паттерн. Все ситуации учебные, а тексты и оформление условные."));
 
     var actions = el("div", "panel-actions");
-    var goBtn = el("button", "btn btn-primary", "Поехали 🚀");
+    var goBtn = el("button", "btn btn-primary", "Начать");
     goBtn.addEventListener("click", function () {
       state.index = 0;
       state.answers = [];
@@ -642,9 +613,20 @@
     });
     actions.appendChild(goBtn);
     panel.appendChild(actions);
+    panel.appendChild(el("div", "intro-count", "Всего " + CASES.length + " кейсов"));
 
     wrap.appendChild(panel);
     render(wrap);
+  }
+
+  function stepItem(num, title, body) {
+    var li = el("div", "intro-step");
+    li.appendChild(el("span", "intro-step-num", num));
+    var col = el("div", "intro-step-body");
+    col.appendChild(el("div", "intro-step-title", title));
+    if (body) col.appendChild(el("div", "intro-step-text", body));
+    li.appendChild(col);
+    return li;
   }
 
   function reviewItem(title, hint) {
@@ -752,8 +734,10 @@
       var chosen = i === idx;
       if (c.options[i].isCorrect) {
         label.classList.add("option-correct");
+        label.appendChild(el("span", "option-result result-correct", "✓ Верно"));
       } else if (chosen) {
         label.classList.add("option-wrong");
+        label.appendChild(el("span", "option-result result-wrong", "✕ Неверно"));
       } else {
         label.classList.add("option-dim");
       }
