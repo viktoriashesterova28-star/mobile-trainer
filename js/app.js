@@ -588,6 +588,7 @@
     cards.appendChild(coverCard("Письмо", "off2"));
     cards.appendChild(coverCard("Баннер", "off3"));
     cover.appendChild(cards);
+    cover.appendChild(el("div", "cover-hint", "В заданиях можно нажимать на кнопки и смотреть, что происходит дальше."));
 
     var left = el("div", "intro-phone");
     left.appendChild(phoneFrame(cover, false));
@@ -598,7 +599,7 @@
     panel.appendChild(el("div", "intro-eyebrow", "Для продуктовых редакторов"));
     panel.appendChild(el("h1", "intro-heading", "Дарк-паттерны в тексте"));
     panel.appendChild(el("p", "intro-body",
-      "Пуш обещает выгоду, письмо торопит с покупкой. В тренажере разберем, когда такие тексты помогают клиенту выбрать, а когда вводят в заблуждение или давят на него."));
+      "Иногда предложение выглядит убедительно, но скрывает важное условие или обещает больше, чем получит клиент. Потренируйтесь замечать такие приемы на примерах из разных продуктов."));
 
     var howBlock = el("div", "how-block");
     howBlock.appendChild(el("div", "intro-subhead", "Как устроен тренажер"));
@@ -610,9 +611,6 @@
     panel.appendChild(howBlock);
 
     panel.appendChild(el("div", "intro-note", "В тренажере — вымышленные или обезличенные ситуации. Тексты и экраны подготовлены для тренировки."));
-
-    // подсказка про интерактив перед «Начать»
-    panel.appendChild(el("div", "intro-hint", "В заданиях можно нажимать на кнопки в телефоне и смотреть, что происходит дальше."));
 
     var actions = el("div", "panel-actions");
     var goBtn = el("button", "btn btn-primary", "Начать");
