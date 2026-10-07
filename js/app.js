@@ -578,10 +578,27 @@
     var wrap = el("div", "screen layout");
 
     // телефон с заставкой
+    var fmts = {};
+    CASES.forEach(function (c) { if (c.screen && c.screen.format) fmts[c.screen.format] = 1; });
+    var fmtCount = Object.keys(fmts).length;
+
     var introScreen = el("div", "intro-screen");
     introScreen.appendChild(el("div", "intro-emoji", "📱"));
     introScreen.appendChild(el("h1", "intro-title", TRENER_TITLE));
     introScreen.appendChild(el("p", "intro-lead", TRENER_INTRO));
+
+    var stats = el("div", "intro-stats");
+    var statCase = el("div", "intro-stat");
+    statCase.appendChild(el("div", "stat-num", String(CASES.length)));
+    statCase.appendChild(el("div", "stat-label", "кейсов"));
+    stats.appendChild(statCase);
+    var statFmt = el("div", "intro-stat");
+    statFmt.appendChild(el("div", "stat-num", String(fmtCount)));
+    statFmt.appendChild(el("div", "stat-label", "форматов"));
+    stats.appendChild(statFmt);
+    introScreen.appendChild(stats);
+
+    introScreen.appendChild(el("div", "intro-tap", "👆 Нажми на кнопку на экране"));
 
     var introPhone = el("div", "intro-phone");
     introPhone.appendChild(phoneFrame(introScreen, true));
@@ -600,13 +617,19 @@
       "Это приемы в тексте, которые создают у клиента неверное ожидание или подталкивают к поспешному решению. Формально все может быть правдой, но смысл искажается."));
     panel.appendChild(def);
 
+    // подсказка про интерактив
+    var tip = el("div", "intro-tip");
+    tip.appendChild(el("span", "intro-tip-ico", "👆"));
+    tip.appendChild(el("div", "intro-tip-text", "Кнопки на экране телефона кликабельные — нажми на любую и посмотри, как отреагирует приложение."));
+    panel.appendChild(tip);
+
     // правила
     var rules = el("div", "review-list");
     var rulesTitle = el("div", "rules-title", "Как это работает");
     panel.appendChild(rulesTitle);
     rules.appendChild(reviewItem("Читаем текст и контекст", "На экране реклама, письмо, пуш или баннер. Оцениваем формулировку, а не оформление."));
     rules.appendChild(reviewItem("Выбираем ожидание", "Ответьте, какое ожидание формирует текст."));
-    rules.appendChild(reviewItem("Смотрим разбор", "В чем проблема, на какой критерий опираемся и как исправить."));
+    rules.appendChild(reviewItem("Смотрим разбор", "В чем проблема и как исправить подачу."));
     panel.appendChild(rules);
 
     var actions = el("div", "panel-actions");
