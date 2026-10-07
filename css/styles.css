@@ -1869,7 +1869,7 @@ body {
 
 /* --- Блок «Как устроен тренажер» --- */
 .how-block {
-  background: #f3eef9;
+  background: #f8f8fb;
   border: 1px solid #ded6e9;
   border-radius: 14px;
   padding: 16px 18px;
@@ -1895,4 +1895,25 @@ body {
   font-size: 13px;
   color: #686273;
   margin: 0 0 22px;
+}
+
+/* --- Обложка: цветные карточки --- */
+.cover-card-label { color: #292633; }
+.cover-card:nth-child(1) { background: #fff0e6; border-color: #f6d8c4; }
+.cover-card:nth-child(2) { background: #eaf2fc; border-color: #d4e3f5; }
+.cover-card:nth-child(3) { background: #f0eaf8; border-color: #dccfec; }
+.cover-card:nth-child(1) .cover-line { background: #f2c9aa; }
+.cover-card:nth-child(2) .cover-line { background: #c0d6f0; }
+.cover-card:nth-child(3) .cover-line { background: #cfbce9; }
+
+/* --- Подсказка про кнопки --- */
+.intro-hint {
+  font-size: 13px;
+  color: #686273;
+  background: #f8f8fb;
+  border: 1px solid #ded6e9;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 0 0 18px;
+  line-height: 1.5;
 }
