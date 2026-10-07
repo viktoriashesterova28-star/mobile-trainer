@@ -984,6 +984,16 @@ body {
   animation: fadeUp 0.45s ease both;
 }
 
+/* кнопка «Назад» к предыдущему кейсу */
+.quiz-back { margin: -6px 0 14px; }
+.btn-back {
+  background: none; border: none; cursor: pointer;
+  color: #aab2c9; font-size: 14px; font-weight: 600;
+  font-family: var(--font); padding: 4px 0;
+  transition: color .15s ease, transform .15s ease;
+}
+.btn-back:hover { color: #fff; transform: translateX(-2px); }
+
 .progress-row { margin-bottom: 18px; }
 .progress-top {
   display: flex;

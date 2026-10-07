@@ -658,6 +658,21 @@
     // панель с заданием
     var panel = el("div", "panel");
 
+    // кнопка «Назад» к предыдущему кейсу
+    if (state.index > 0) {
+      var backRow = el("div", "quiz-back");
+      var backBtn = el("button", "btn-back", "← Назад");
+      backBtn.addEventListener("click", function () {
+        state.index -= 1;
+        state.currentSelected = -1;
+        var cid = CASES[state.index].id;
+        state.answers = state.answers.filter(function (a) { return a.caseId !== cid; });
+        renderQuiz();
+      });
+      backRow.appendChild(backBtn);
+      panel.appendChild(backRow);
+    }
+
     // прогресс
     var progressRow = el("div", "progress-row");
     var progressTop = el("div", "progress-top");
