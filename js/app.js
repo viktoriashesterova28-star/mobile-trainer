@@ -580,11 +580,17 @@
   function renderIntro() {
     var wrap = el("div", "screen layout");
 
-    // Левая колонка: подпись + телефон со статичным примером кейса
+    // Обложка внутри телефона (статичная, без кнопок)
+    var cover = el("div", "intro-screen cover");
+    cover.appendChild(el("h1", "cover-title", "Смотрим на текст глазами клиента"));
+    var cards = el("div", "cover-cards");
+    cards.appendChild(coverCard("Пуш", "off1"));
+    cards.appendChild(coverCard("Письмо", "off2"));
+    cards.appendChild(coverCard("Баннер", "off3"));
+    cover.appendChild(cards);
+
     var left = el("div", "intro-phone");
-    left.appendChild(el("div", "phone-caption", "Пример задания"));
-    var example = CASES[2];
-    left.appendChild(phoneFrame(renderFormatScreen(example.screen.format, example.screen, true), example.screen.format === "story", example.screen.tint));
+    left.appendChild(phoneFrame(cover, false));
     wrap.appendChild(left);
 
     // Правая колонка: вводная
@@ -593,15 +599,13 @@
     panel.appendChild(el("h1", "intro-heading", "Дарк-паттерны в тексте"));
     panel.appendChild(el("p", "intro-body",
       "Иногда предложение выглядит убедительно, но скрывает важное условие или обещает больше, чем получит клиент. Потренируйтесь замечать такие приемы на примерах из разных продуктов."));
-    panel.appendChild(el("div", "intro-subhead", "Как проходить"));
+    panel.appendChild(el("div", "intro-subhead", "Как устроен тренажер"));
 
-    var steps = el("div", "intro-steps");
-    steps.appendChild(stepItem("1", "Прочитайте предложение и условия.", "В телефоне — сообщение для клиента. Справа — дополнительные факты и вопрос для вас."));
-    steps.appendChild(stepItem("2", "Выберите ответ.", "В каждом задании один правильный вариант."));
-    steps.appendChild(stepItem("3", "Посмотрите разбор.", "Узнайте, что в тексте корректно, а что стоит изменить и почему."));
-    panel.appendChild(steps);
+    panel.appendChild(blockItem("Оцените предложение", "В телефоне — текст для клиента, рядом — условия и вопрос задания. Сравните то, что обещает текст, с условиями предложения."));
+    panel.appendChild(blockItem("Выберите ответ", "В каждом задании один правильный вариант. Среди примеров есть тексты с дарк-паттернами и корректные предложения."));
+    panel.appendChild(blockItem("Изучите разбор", "После ответа покажем, что клиент может понять неверно и как исправить текст. Если проблем нет, объясним почему."));
 
-    panel.appendChild(el("div", "intro-note", "Не в каждом кейсе есть дарк-паттерн. Все ситуации учебные, а тексты и оформление условные."));
+    panel.appendChild(el("div", "intro-note", "Все ситуации учебные, а тексты и оформление условные."));
 
     var actions = el("div", "panel-actions");
     var goBtn = el("button", "btn btn-primary", "Начать");
@@ -619,14 +623,22 @@
     render(wrap);
   }
 
-  function stepItem(num, title, body) {
-    var li = el("div", "intro-step");
-    li.appendChild(el("span", "intro-step-num", num));
-    var col = el("div", "intro-step-body");
-    col.appendChild(el("div", "intro-step-title", title));
-    if (body) col.appendChild(el("div", "intro-step-text", body));
-    li.appendChild(col);
-    return li;
+  function coverCard(label, cls) {
+    var c = el("div", "cover-card " + cls);
+    c.appendChild(el("div", "cover-card-label", label));
+    var lines = el("div", "cover-card-lines");
+    lines.appendChild(el("span", "cover-line w"));
+    lines.appendChild(el("span", "cover-line m"));
+    lines.appendChild(el("span", "cover-line s"));
+    c.appendChild(lines);
+    return c;
+  }
+
+  function blockItem(title, text) {
+    var b = el("div", "intro-block");
+    b.appendChild(el("div", "intro-block-title", title));
+    b.appendChild(el("div", "intro-block-text", text));
+    return b;
   }
 
   function reviewItem(title, hint) {

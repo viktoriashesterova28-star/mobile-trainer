@@ -1822,3 +1822,44 @@ body {
   text-align: center;
   margin-top: 12px;
 }
+
+/* --- Обложка внутри телефона --- */
+.intro-screen.cover {
+  background: #f5f2fa;
+  color: #292633;
+  justify-content: center;
+  padding: 34px 20px;
+}
+.cover-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #292633;
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  margin: 0 0 24px;
+}
+.cover-cards { display: flex; flex-direction: column; gap: 12px; }
+.cover-card {
+  width: 214px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #ded6e9;
+  border-radius: 14px;
+  padding: 13px 15px;
+  box-shadow: 0 10px 24px -16px rgba(41, 38, 51, 0.3);
+}
+.cover-card.off1 { transform: translateX(-16px) rotate(-1.3deg); }
+.cover-card.off2 { transform: translateX(14px); }
+.cover-card.off3 { transform: translateX(-10px) rotate(1deg); }
+.cover-card-label { font-size: 12px; font-weight: 700; color: #7151ad; margin-bottom: 9px; }
+.cover-card-lines { display: flex; flex-direction: column; gap: 7px; }
+.cover-line { height: 7px; border-radius: 4px; background: #e9e4f1; }
+.cover-line.w { width: 88%; }
+.cover-line.m { width: 66%; }
+.cover-line.s { width: 44%; }
+
+/* --- Блоки инструкции без нумерации --- */
+.intro-block { margin-bottom: 16px; }
+.intro-block-title { font-size: 15px; font-weight: 700; color: #292633; margin-bottom: 3px; }
+.intro-block-text { font-size: 14px; color: #686273; line-height: 1.5; }
