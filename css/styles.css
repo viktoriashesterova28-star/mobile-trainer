@@ -1863,3 +1863,36 @@ body {
 .intro-block { margin-bottom: 16px; }
 .intro-block-title { font-size: 15px; font-weight: 700; color: #292633; margin-bottom: 3px; }
 .intro-block-text { font-size: 14px; color: #686273; line-height: 1.5; }
+
+/* --- Вводный текст: меньше, уже --- */
+.intro-body { font-size: 16px; max-width: 62ch; margin-bottom: 30px; }
+
+/* --- Блок «Как устроен тренажер» --- */
+.how-block {
+  background: #f3eef9;
+  border: 1px solid #ded6e9;
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 0 0 26px;
+}
+.how-block .intro-subhead { margin: 0 0 6px; font-size: 16px; font-weight: 800; }
+.how-list { display: flex; flex-direction: column; }
+.how-row { display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; }
+.how-row + .how-row { border-top: 1px solid #ded6e9; }
+.how-row:first-child { padding-top: 8px; }
+.how-row:last-child { padding-bottom: 0; }
+.how-ico { flex: none; width: 22px; height: 22px; margin-top: 1px; color: #7151ad; }
+.how-ico svg { width: 100%; height: 100%; display: block; }
+.how-row-body { min-width: 0; }
+.how-row-title { font-size: 14.5px; font-weight: 700; color: #292633; margin-bottom: 4px; }
+.how-row-text { font-size: 13.5px; font-weight: 400; color: #686273; line-height: 1.5; }
+
+/* --- Заметка без подложки --- */
+.intro-note {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  color: #686273;
+  margin: 0 0 22px;
+}

@@ -599,11 +599,15 @@
     panel.appendChild(el("h1", "intro-heading", "Дарк-паттерны в тексте"));
     panel.appendChild(el("p", "intro-body",
       "Иногда предложение выглядит убедительно, но скрывает важное условие или обещает больше, чем получит клиент. Потренируйтесь замечать такие приемы на примерах из разных продуктов."));
-    panel.appendChild(el("div", "intro-subhead", "Как устроен тренажер"));
 
-    panel.appendChild(blockItem("Оцените предложение", "В телефоне — текст для клиента, рядом — условия и вопрос задания. Сравните то, что обещает текст, с условиями предложения."));
-    panel.appendChild(blockItem("Выберите ответ", "В каждом задании один правильный вариант. Среди примеров есть тексты с дарк-паттернами и корректные предложения."));
-    panel.appendChild(blockItem("Изучите разбор", "После ответа покажем, что клиент может понять неверно и как исправить текст. Если проблем нет, объясним почему."));
+    var howBlock = el("div", "how-block");
+    howBlock.appendChild(el("div", "intro-subhead", "Как устроен тренажер"));
+    var howList = el("div", "how-list");
+    howList.appendChild(howRow("doc", "Оцените предложение", "В телефоне — текст для клиента, рядом — условия и вопрос задания. Сравните то, что обещает текст, с условиями предложения."));
+    howList.appendChild(howRow("pick", "Выберите ответ", "В каждом задании один правильный вариант. Среди примеров есть тексты с дарк-паттернами и корректные предложения."));
+    howList.appendChild(howRow("com", "Изучите разбор", "После ответа покажем, что клиент может понять неверно и как исправить текст. Если проблем нет, объясним почему."));
+    howBlock.appendChild(howList);
+    panel.appendChild(howBlock);
 
     panel.appendChild(el("div", "intro-note", "Все ситуации учебные, а тексты и оформление условные."));
 
@@ -634,11 +638,22 @@
     return c;
   }
 
-  function blockItem(title, text) {
-    var b = el("div", "intro-block");
-    b.appendChild(el("div", "intro-block-title", title));
-    b.appendChild(el("div", "intro-block-text", text));
-    return b;
+  var ICONS = {
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 12h5"/><path d="M10 16h5"/></svg>',
+    pick: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>',
+    com: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9.5L5 19v-3H4z"/></svg>'
+  };
+
+  function howRow(icon, title, text) {
+    var row = el("div", "how-row");
+    var ic = el("span", "how-ico");
+    ic.innerHTML = ICONS[icon];
+    row.appendChild(ic);
+    var body = el("div", "how-row-body");
+    body.appendChild(el("div", "how-row-title", title));
+    body.appendChild(el("div", "how-row-text", text));
+    row.appendChild(body);
+    return row;
   }
 
   function reviewItem(title, hint) {
