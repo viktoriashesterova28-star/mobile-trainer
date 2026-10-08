@@ -846,17 +846,15 @@
   function bsRow(label, text, kind) {
     var cls = kind === "why" ? "bs-lilac" : (kind === "fix" ? "bs-green" : "bs-blue");
     var ico = kind === "why" ? ICONS.link : (kind === "fix" ? ICONS.pencil : ICONS.eye);
-    var row = el("div", "bs-row " + cls);
-    var left = el("div", "bs-left");
+    var card = el("div", "bs-card " + cls);
     var head = el("div", "bs-head");
     var i = el("span", "bs-ico");
     i.innerHTML = ico;
     head.appendChild(i);
     head.appendChild(el("span", "bs-label", label));
-    left.appendChild(head);
-    row.appendChild(left);
-    row.appendChild(el("div", "bs-text", text));
-    return row;
+    card.appendChild(head);
+    card.appendChild(el("div", "bs-text", text));
+    return card;
   }
 
   function answerCard(label, value, kind) {
