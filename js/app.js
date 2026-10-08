@@ -677,6 +677,35 @@
   // ============================================================================
   // 2. Квиз
   // ============================================================================
+
+  // вернуться на стартовый экран
+  function goHome() {
+    state.index = 0;
+    state.answers = [];
+    state.currentSelected = -1;
+    renderIntro();
+  }
+
+  // верхняя навигация: «На главную» и «← Назад» (если есть предыдущий кейс)
+  function buildTopNav() {
+    var row = el("div", "quiz-nav");
+    if (state.index > 0) {
+      var back = el("button", "btn-nav", "← Назад");
+      back.addEventListener("click", function () {
+        state.index -= 1;
+        state.currentSelected = -1;
+        var cid = CASES[state.index].id;
+        state.answers = state.answers.filter(function (a) { return a.caseId !== cid; });
+        renderQuiz();
+      });
+      row.appendChild(back);
+    }
+    var home = el("button", "btn-nav home", "На главную");
+    home.addEventListener("click", goHome);
+    row.appendChild(home);
+    return row;
+  }
+
   function renderQuiz() {
     if (state.index >= CASES.length) {
       renderResults();
@@ -692,20 +721,8 @@
     // панель с заданием
     var panel = el("div", "panel");
 
-    // кнопка «Назад» к предыдущему кейсу
-    if (state.index > 0) {
-      var backRow = el("div", "quiz-back");
-      var backBtn = el("button", "btn-back", "← Назад");
-      backBtn.addEventListener("click", function () {
-        state.index -= 1;
-        state.currentSelected = -1;
-        var cid = CASES[state.index].id;
-        state.answers = state.answers.filter(function (a) { return a.caseId !== cid; });
-        renderQuiz();
-      });
-      backRow.appendChild(backBtn);
-      panel.appendChild(backRow);
-    }
+    // кнопки навигации
+    panel.appendChild(buildTopNav());
 
     // прогресс (номер кейса + полоса)
     panel.appendChild(buildProgress(state.index, CASES.length));
@@ -756,20 +773,8 @@
     var correctOpt = null;
     c.options.forEach(function (o) { if (o.isCorrect) correctOpt = o; });
 
-    // кнопка «Назад»
-    if (state.index > 0) {
-      var backRow = el("div", "quiz-back");
-      var backBtn = el("button", "btn-back", "← Назад");
-      backBtn.addEventListener("click", function () {
-        state.index -= 1;
-        state.currentSelected = -1;
-        var cid = CASES[state.index].id;
-        state.answers = state.answers.filter(function (a) { return a.caseId !== cid; });
-        renderQuiz();
-      });
-      backRow.appendChild(backBtn);
-      panel.appendChild(backRow);
-    }
+    // кнопки навигации
+    panel.appendChild(buildTopNav());
 
     // прогресс (номер кейса + полоса)
     panel.appendChild(buildProgress(state.index, CASES.length));

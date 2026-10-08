@@ -2023,3 +2023,16 @@ body {
 @media (max-width: 860px) {
   .answer-grid { flex-direction: column; }
 }
+
+/* навигация в кейсе: «На главную» и «← Назад» */
+.quiz-nav { display: flex; align-items: center; gap: 12px; margin: -4px 0 14px; }
+.btn-nav {
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font);
+  font-size: 14px; font-weight: 600;
+  color: #686273; padding: 4px 0;
+  transition: color .15s ease, transform .15s ease;
+}
+.btn-nav:hover { color: #292633; }
+.btn-nav:active { transform: translateY(1px); }
+.btn-nav.home { margin-left: auto; }
