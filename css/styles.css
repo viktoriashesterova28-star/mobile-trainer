@@ -2036,3 +2036,50 @@ body {
 .btn-nav:hover { color: #292633; }
 .btn-nav:active { transform: translateY(1px); }
 .btn-nav.home { margin-left: auto; }
+
+/* ============================================================================
+   Экран результатов и обратной связи
+   ============================================================================ */
+.results-panel {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #ded6e9;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px -30px rgba(41, 38, 51, 0.25);
+  padding: 34px 38px;
+}
+.results-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.results-top-left { flex: 1; min-width: 0; }
+.results-title { font-size: 30px; font-weight: 800; color: #292633; margin: 0 0 10px; letter-spacing: -0.4px; line-height: 1.2; }
+.results-lead { font-size: 16px; color: #686273; margin: 0; line-height: 1.6; max-width: 62ch; }
+.results-score { flex: none; text-align: right; }
+.results-num { display: block; font-size: 44px; font-weight: 800; color: #7151ad; line-height: 1; }
+.results-pct { display: block; font-size: 18px; font-weight: 600; color: #686273; margin-top: 4px; }
+.results-actions { display: flex; gap: 12px; margin-top: 26px; }
+.results-actions .btn { width: auto; flex: 1 1 0; min-width: 0; }
+.btn-md { height: 48px; padding: 0 22px; }
+.mistakes-list { margin-top: 30px; padding-top: 28px; border-top: 1px solid #ded6e9; }
+.mistake-row { background: #ffffff; border: 1px solid #ded6e9; border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+.mistake-row:last-child { margin-bottom: 0; }
+.mistake-head {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font); padding: 14px 16px; text-align: left;
+}
+.mistake-dot { width: 8px; height: 8px; border-radius: 50%; background: #e8a8b0; flex: none; }
+.mistake-name { flex: 1; font-size: 16px; font-weight: 600; color: #292633; }
+.mistake-caret { flex: none; color: #9b95a6; font-size: 14px; transition: transform .2s ease; }
+.mistake-head.open .mistake-caret { transform: rotate(180deg); }
+.mistake-body { padding: 0 16px 16px 34px; }
+.mistake-fix { font-size: 16px; color: #3a3642; line-height: 1.6; }
+
+/* узкий экран: результат, кнопки и опрос в столбик */
+@media (max-width: 700px) {
+  .results-panel { padding: 24px 18px; }
+  .results-top { flex-direction: column; }
+  .results-score { text-align: left; }
+  .results-actions { flex-direction: column; }
+  .results-actions .btn { width: 100%; flex: none; }
+}

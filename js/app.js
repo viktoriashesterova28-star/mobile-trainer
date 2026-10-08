@@ -880,59 +880,63 @@
     var correct = correctCount();
     var pct = Math.round(correct / total * 100);
 
-    var wrap = el("div", "screen layout");
+    var wrap = el("div", "screen");
+    var panel = el("div", "results-panel");
 
-    // телефон с результатом
-    var resScreen = el("div", "intro-screen");
-    resScreen.appendChild(el("div", "intro-emoji", pct >= 70 ? "🎉" : pct >= 40 ? "💪" : "🌱"));
-    var ring = el("div", "score-ring " + (pct >= 70 ? "score-good" : pct >= 40 ? "score-mid" : "score-low"));
-    var num = el("div", "score-num");
-    num.appendChild(el("span", "score-value", String(pct)));
-    num.appendChild(el("span", "score-pct", "%"));
-    ring.appendChild(num);
-    ring.appendChild(el("div", "score-caption", "верно " + correct + " из " + total));
-    resScreen.appendChild(ring);
-    resScreen.appendChild(el("h1", "intro-title", resultsTitle(pct)));
-    resScreen.appendChild(el("p", "intro-lead", resultsLead(pct)));
+    // верх: заголовок слева, число справа
+    var top = el("div", "results-top");
+    var left = el("div", "results-top-left");
+    left.appendChild(el("h1", "results-title", resultsTitle(pct)));
+    left.appendChild(el("p", "results-lead", resultsLead(pct)));
+    top.appendChild(left);
+    var score = el("div", "results-score");
+    score.appendChild(el("span", "results-num", correct + " / " + total));
+    score.appendChild(el("span", "results-pct", pct + "%"));
+    top.appendChild(score);
+    panel.appendChild(top);
 
-    var resPhone = el("div", "");
-    resPhone.appendChild(phoneFrame(resScreen, true));
-    wrap.appendChild(resPhone);
-
-    // панель с разбором ошибок
-    var panel = el("div", "panel");
-    panel.appendChild(el("h2", "panel-title", resultsTitle(pct)));
-    panel.appendChild(el("p", "panel-lead", resultsLead(pct)));
-
-    var wrong = state.answers.filter(function (a) { return !a.correct; });
-    if (wrong.length > 0) {
-      var list = el("div", "review-list");
-      wrong.forEach(function (a) {
-        var item = CASES.filter(function (c) { return c.id === a.caseId; })[0];
-        list.appendChild(reviewItem(item.title, "Как исправить подачу: " + breakdownTakeaway(item.breakdown)));
-      });
-      panel.appendChild(list);
-    } else {
-      panel.appendChild(el("p", "all-correct", "Вы справились со всеми кейсами. Отличная работа!"));
-    }
-
-    var actions = el("div", "panel-actions");
-    var continueBtn = el("button", "btn btn-primary", "Оценить тренажер");
-    continueBtn.addEventListener("click", renderSurvey);
-    actions.appendChild(continueBtn);
-
-    var restart = el("button", "btn btn-ghost", "Пройти заново");
-    restart.addEventListener("click", function () {
-      state.index = 0;
-      state.answers = [];
-      state.currentSelected = -1;
-      renderIntro();
-    });
+    // действия перед списком кейсов
+    var actions = el("div", "results-actions");
+    var cont = el("button", "btn btn-primary btn-md", "Оценить тренажер");
+    cont.addEventListener("click", renderSurvey);
+    actions.appendChild(cont);
+    var restart = el("button", "btn btn-ghost btn-md", "Пройти заново");
+    restart.addEventListener("click", goHome);
     actions.appendChild(restart);
     panel.appendChild(actions);
 
+    // кейсы с неверными ответами
+    var wrong = state.answers.filter(function (a) { return !a.correct; });
+    if (wrong.length > 0) {
+      var list = el("div", "mistakes-list");
+      wrong.forEach(function (a) {
+        var item = CASES.filter(function (c) { return c.id === a.caseId; })[0];
+        list.appendChild(mistakeRow(item));
+      });
+      panel.appendChild(list);
+    }
+
     wrap.appendChild(panel);
     render(wrap);
+  }
+
+  function mistakeRow(item) {
+    var row = el("div", "mistake-row");
+    var head = el("button", "mistake-head");
+    head.appendChild(el("span", "mistake-dot"));
+    head.appendChild(el("span", "mistake-name", item.title));
+    head.appendChild(el("span", "mistake-caret", "▾"));
+    row.appendChild(head);
+    var body = el("div", "mistake-body");
+    body.appendChild(el("div", "mistake-fix", breakdownTakeaway(item.breakdown)));
+    body.style.display = "none";
+    row.appendChild(body);
+    head.addEventListener("click", function () {
+      var open = body.style.display !== "none";
+      body.style.display = open ? "none" : "block";
+      head.classList.toggle("open", !open);
+    });
+    return row;
   }
 
   function resultsTitle(pct) {
@@ -953,19 +957,15 @@
   // 4. Опрос
   // ============================================================================
   function renderSurvey() {
-    var wrap = el("div", "screen layout");
+    var wrap = el("div", "screen");
+    var panel = el("div", "results-panel");
 
-    var sScreen = el("div", "intro-screen");
-    sScreen.appendChild(el("div", "intro-emoji", "🙋"));
-    sScreen.appendChild(el("h1", "intro-title", "Пара вопросов в конце"));
-    sScreen.appendChild(el("p", "intro-lead", "Ваши ответы помогут понять, стоит ли развивать тренажер."));
-    var sPhone = el("div", "");
-    sPhone.appendChild(phoneFrame(sScreen, true));
-    wrap.appendChild(sPhone);
+    var back = el("button", "btn-nav", "← Назад к результатам");
+    back.addEventListener("click", renderResults);
+    panel.appendChild(back);
 
-    var panel = el("div", "panel");
-    panel.appendChild(el("h2", "panel-title", "Обратная связь"));
-    panel.appendChild(el("p", "panel-lead", "Пара коротких вопросов, и все."));
+    panel.appendChild(el("h1", "results-title", "Обратная связь"));
+    panel.appendChild(el("p", "results-lead", "Пара коротких вопросов, и все."));
 
     var q1 = el("div", "survey-q");
     q1.appendChild(el("div", "survey-q-text", "Насколько полезен был тренажер?"));
@@ -1018,29 +1018,15 @@
   // 5. Спасибо
   // ============================================================================
   function renderThanks() {
-    var wrap = el("div", "screen layout");
+    var wrap = el("div", "screen");
+    var panel = el("div", "results-panel");
 
-    var tScreen = el("div", "intro-screen");
-    var check = el("div", "thanks-check", "✓");
-    tScreen.appendChild(check);
-    tScreen.appendChild(el("h1", "intro-title", "Спасибо!"));
-    tScreen.appendChild(el("p", "intro-lead", "Тренажер пройден. Если захотите вернуться к разборам, начните заново."));
-    var tPhone = el("div", "");
-    tPhone.appendChild(phoneFrame(tScreen, true));
-    wrap.appendChild(tPhone);
+    panel.appendChild(el("h1", "results-title", "Готово!"));
+    panel.appendChild(el("p", "results-lead", "Спасибо, что прошли тренажер. Возвращайтесь к разборам, когда захотите прокачать насмотренность на дарк-паттерны."));
 
-    var panel = el("div", "panel");
-    panel.appendChild(el("h2", "panel-title", "Готово!"));
-    panel.appendChild(el("p", "panel-lead", "Спасибо, что прошли тренажер. Возвращайтесь к разборам, когда захотите прокачать насмотренность на дарк-паттерны."));
-
-    var actions = el("div", "panel-actions");
-    var restart = el("button", "btn btn-primary", "Пройти еще раз");
-    restart.addEventListener("click", function () {
-      state.index = 0;
-      state.answers = [];
-      state.currentSelected = -1;
-      renderIntro();
-    });
+    var actions = el("div", "results-actions");
+    var restart = el("button", "btn btn-primary btn-md", "Пройти еще раз");
+    restart.addEventListener("click", goHome);
     actions.appendChild(restart);
     panel.appendChild(actions);
 
