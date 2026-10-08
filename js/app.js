@@ -771,19 +771,33 @@
     // прогресс (номер кейса + полоса)
     panel.appendChild(buildProgress(state.index, CASES.length));
 
-    // результат — компактная строка
-    var res = el("div", "result " + (chosen.isCorrect ? "result-correct" : "result-wrong"));
-    res.appendChild(el("span", "result-ico", chosen.isCorrect ? "✓" : "✕"));
-    res.appendChild(el("span", "result-text", chosen.isCorrect ? "Верно" : "Не совсем"));
+    // результат — крупный блок
+    var correct = chosen.isCorrect;
+    var hasDark = !!(c.breakdown && c.breakdown.fix);
+    var res = el("div", "result-block " + (correct ? "rb-correct" : "rb-wrong"));
+    res.appendChild(el("div", "result-icon", correct ? "✓" : "…"));
+    res.appendChild(el("div", "result-title", correct ? "Верно" : "Не совсем"));
+    res.appendChild(el("div", "result-caption", correct
+      ? (hasDark ? "В тексте действительно есть этот прием" : "Текст корректен и не вводит клиента в заблуждение")
+      : "Посмотрим, на что еще стоит обратить внимание"));
     panel.appendChild(res);
 
-    // выбранный ответ + правильный (если ошибка)
-    var ansBlock = el("div", "answer-block");
-    ansBlock.appendChild(el("div", "answer-row", "Ваш ответ: " + chosen.text));
-    if (!chosen.isCorrect && correctOpt) {
-      ansBlock.appendChild(el("div", "answer-row answer-correct", "Правильный ответ: " + correctOpt.text));
+    // ответы после проверки
+    if (correct) {
+      var ac = el("div", "answer-card answer-card-correct");
+      ac.appendChild(el("div", "answer-label", "Ваш ответ"));
+      ac.appendChild(el("div", "answer-value", chosen.text));
+      panel.appendChild(ac);
+    } else {
+      var aw = el("div", "answer-card answer-card-wrong");
+      aw.appendChild(el("div", "answer-label", "Ваш ответ"));
+      aw.appendChild(el("div", "answer-value", chosen.text));
+      panel.appendChild(aw);
+      var ac2 = el("div", "answer-card answer-card-correct");
+      ac2.appendChild(el("div", "answer-label", "Правильный ответ"));
+      ac2.appendChild(el("div", "answer-value", correctOpt.text));
+      panel.appendChild(ac2);
     }
-    panel.appendChild(ansBlock);
 
     // разбор — один общий блок
     panel.appendChild(buildBreakdown(c));
@@ -815,6 +829,7 @@
 
   function buildBreakdown(c) {
     var block = el("div", "breakdown-block");
+    block.appendChild(el("div", "breakdown-title", "Разбираем текст"));
     var b = c.breakdown;
     if (b.rows) {
       b.rows.forEach(function (r) { block.appendChild(breakdownSection(r.label, r.text, r.kind)); });
