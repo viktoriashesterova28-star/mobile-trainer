@@ -683,10 +683,8 @@
     var c = CASES[state.index];
     var wrap = el("div", "screen layout");
 
-    // фрейм кейса (телефон или десктоп/браузер)
-    var casePhone = el("div", "");
-    casePhone.appendChild(caseFrame(c.screen));
-    wrap.appendChild(casePhone);
+    // телефон с предложением
+    wrap.appendChild(caseFrame(c.screen));
 
     // панель с заданием
     var panel = el("div", "panel");
@@ -706,17 +704,8 @@
       panel.appendChild(backRow);
     }
 
-    // прогресс
-    var progressRow = el("div", "progress-row");
-    var progressTop = el("div", "progress-top");
-    progressTop.appendChild(el("span", "", "Кейс " + (state.index + 1) + " из " + CASES.length));
-    progressRow.appendChild(progressTop);
-    var track = el("div", "progress-track");
-    var fill = el("div", "progress-fill");
-    fill.style.width = ((state.index) / CASES.length * 100) + "%";
-    track.appendChild(fill);
-    progressRow.appendChild(track);
-    panel.appendChild(progressRow);
+    // прогресс (номер кейса + полоса)
+    panel.appendChild(buildProgress(state.index, CASES.length));
 
     // условия задания (контекст для редактора) — перед вопросом
     if (c.context) {
@@ -744,11 +733,6 @@
     });
     panel.appendChild(optionsWrap);
 
-    // обратная связь
-    var feedback = el("div", "feedback");
-    feedback.id = "feedback";
-    panel.appendChild(feedback);
-
     wrap.appendChild(panel);
     render(wrap);
   }
@@ -756,66 +740,97 @@
   function selectOption(c, idx) {
     state.currentSelected = idx;
     state.answers.push({ caseId: c.id, selectedIndex: idx, correct: c.options[idx].isCorrect });
-
-    var opts = document.querySelectorAll(".option");
-    opts.forEach(function (label, i) {
-      var chosen = i === idx;
-      if (c.options[i].isCorrect) {
-        label.classList.add("option-correct");
-        label.appendChild(el("span", "option-result result-correct", "✓ Верно"));
-      } else if (chosen) {
-        label.classList.add("option-wrong");
-        label.appendChild(el("span", "option-result result-wrong", "✕ Неверно"));
-      } else {
-        label.classList.add("option-dim");
-      }
-    });
-
-    renderFeedback(c, idx);
+    renderAnswerView(c, idx);
   }
 
-  function renderFeedback(c, idx) {
-    var fb = document.getElementById("feedback");
-    fb.innerHTML = "";
+  // Экран разбора после ответа (заменяет правую панель)
+  function renderAnswerView(c, idx) {
+    var panel = document.querySelector(".panel");
+    if (!panel) { renderQuiz(); return; }
+    panel.innerHTML = "";
 
     var chosen = c.options[idx];
+    var correctOpt = null;
+    c.options.forEach(function (o) { if (o.isCorrect) correctOpt = o; });
 
-    // вердикт
-    var verdict = el("div", "verdict " + (chosen.isCorrect ? "verdict-correct" : "verdict-wrong"));
-    verdict.textContent = chosen.isCorrect ? "Верно" : "Не совсем";
-    fb.appendChild(verdict);
-
-    // плашки разбора (стандартные три или кастомный набор)
-    var b = c.breakdown;
-    if (b.rows) {
-      b.rows.forEach(function (r) { fb.appendChild(breakdownRow(r.label, r.text, r.kind)); });
-    } else {
-      fb.appendChild(breakdownRow("Что клиент может понять неверно", b.misconception, "mis"));
-      fb.appendChild(breakdownRow("Почему это происходит", b.why, "why"));
-      fb.appendChild(breakdownRow("Как исправить", b.fix, "fix"));
+    // кнопка «Назад»
+    if (state.index > 0) {
+      var backRow = el("div", "quiz-back");
+      var backBtn = el("button", "btn-back", "← Назад");
+      backBtn.addEventListener("click", function () {
+        state.index -= 1;
+        state.currentSelected = -1;
+        var cid = CASES[state.index].id;
+        state.answers = state.answers.filter(function (a) { return a.caseId !== cid; });
+        renderQuiz();
+      });
+      backRow.appendChild(backBtn);
+      panel.appendChild(backRow);
     }
 
+    // прогресс (номер кейса + полоса)
+    panel.appendChild(buildProgress(state.index, CASES.length));
+
+    // результат — компактная строка
+    var res = el("div", "result " + (chosen.isCorrect ? "result-correct" : "result-wrong"));
+    res.appendChild(el("span", "result-ico", chosen.isCorrect ? "✓" : "✕"));
+    res.appendChild(el("span", "result-text", chosen.isCorrect ? "Верно" : "Не совсем"));
+    panel.appendChild(res);
+
+    // выбранный ответ + правильный (если ошибка)
+    var ansBlock = el("div", "answer-block");
+    ansBlock.appendChild(el("div", "answer-row", "Ваш ответ: " + chosen.text));
+    if (!chosen.isCorrect && correctOpt) {
+      ansBlock.appendChild(el("div", "answer-row answer-correct", "Правильный ответ: " + correctOpt.text));
+    }
+    panel.appendChild(ansBlock);
+
+    // разбор — один общий блок
+    panel.appendChild(buildBreakdown(c));
+
+    // кнопка «Следующий кейс»
     var next = el("button", "btn btn-primary", state.index === CASES.length - 1 ? "Показать результаты" : "Следующий кейс");
     next.addEventListener("click", function () {
       state.index += 1;
       state.currentSelected = -1;
       renderQuiz();
     });
-    fb.appendChild(next);
+    panel.appendChild(next);
 
-    // показать разбор без ручной прокрутки
-    fb.scrollIntoView({ behavior: "smooth", block: "start" });
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  function breakdownRow(label, text, kind) {
-    var icons = { focus: "◎", crit: "◎", mis: "⚠", why: "◆", fix: "✓" };
-    var row = el("div", "breakdown" + (kind ? " breakdown-" + kind : ""));
-    var head = el("div", "breakdown-head");
-    head.appendChild(el("span", "breakdown-ico", icons[kind] || "•"));
-    head.appendChild(el("span", "breakdown-label", label));
-    row.appendChild(head);
-    row.appendChild(el("div", "breakdown-text", text));
-    return row;
+  function buildProgress(index, total) {
+    var progressRow = el("div", "progress-row");
+    var progressTop = el("div", "progress-top");
+    progressTop.appendChild(el("span", "", "Кейс " + (index + 1) + " из " + total));
+    progressRow.appendChild(progressTop);
+    var track = el("div", "progress-track");
+    var fill = el("div", "progress-fill");
+    fill.style.width = (index / total * 100) + "%";
+    track.appendChild(fill);
+    progressRow.appendChild(track);
+    return progressRow;
+  }
+
+  function buildBreakdown(c) {
+    var block = el("div", "breakdown-block");
+    var b = c.breakdown;
+    if (b.rows) {
+      b.rows.forEach(function (r) { block.appendChild(breakdownSection(r.label, r.text, r.kind)); });
+    } else {
+      block.appendChild(breakdownSection("Что клиент может понять неверно", b.misconception, "mis"));
+      block.appendChild(breakdownSection("Почему это происходит", b.why, "why"));
+      if (b.fix) block.appendChild(breakdownSection("Как исправить", b.fix, "fix"));
+    }
+    return block;
+  }
+
+  function breakdownSection(label, text, kind) {
+    var s = el("div", "bs-section" + (kind ? " bs-" + kind : ""));
+    s.appendChild(el("div", "bs-label", label));
+    s.appendChild(el("div", "bs-text", text));
+    return s;
   }
 
   // ============================================================================

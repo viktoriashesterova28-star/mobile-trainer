@@ -1925,3 +1925,61 @@ body {
   margin: 0 0 18px;
   line-height: 1.5;
 }
+
+/* ============================================================================
+   Экраны заданий и разборов — компактнее
+   ============================================================================ */
+/* телефон подстраивается под высоту окна, сохраняя пропорции */
+.phone { width: auto; height: min(660px, calc(100vh - 96px)); aspect-ratio: 330 / 640; }
+.phone-wrap { position: sticky; top: 16px; align-self: flex-start; }
+
+/* меньше декоративная иллюстрация внутри телефона */
+.illust { height: 90px; font-size: 40px; }
+.illust.size-lg { height: 112px; font-size: 52px; }
+
+/* панель: компактнее */
+.panel { padding: 24px 28px; }
+.progress-track { height: 6px; }
+.progress-top { margin-bottom: 6px; }
+.case-context { padding: 12px 14px; margin-bottom: 16px; }
+.case-context-label { text-transform: none; font-size: 12px; letter-spacing: 0; margin-bottom: 4px; }
+.case-context-text { font-size: 15px; }
+.panel-question { font-size: 18px; margin-bottom: 16px; }
+
+/* варианты ответа: компактнее */
+.options { gap: 10px; margin-bottom: 18px; }
+.option { padding: 12px 40px 12px 14px; font-size: 15px; }
+.option-key { width: 24px; height: 24px; font-size: 12px; }
+
+/* результат после ответа */
+.result {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 15px; font-weight: 700;
+  padding: 10px 14px; border-radius: 10px; margin-bottom: 16px;
+}
+.result-ico { font-size: 15px; }
+.result-correct { background: var(--correct-soft); color: #0f7a52; }
+.result-wrong { background: var(--wrong-soft); color: #c13a44; }
+
+/* выбранный и правильный ответ */
+.answer-block {
+  background: #ffffff; border: 1px solid #ded6e9; border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 16px;
+}
+.answer-row { font-size: 15px; color: #292633; line-height: 1.5; }
+.answer-row + .answer-row { margin-top: 8px; }
+.answer-correct { color: #0f7a52; }
+
+/* разбор — один блок с тремя разделами */
+.breakdown-block {
+  background: #ffffff; border: 1px solid #ded6e9; border-radius: 14px;
+  padding: 6px 18px 18px; margin-bottom: 20px;
+}
+.bs-section { padding-top: 14px; }
+.bs-section + .bs-section { border-top: 1px solid #ded6e9; margin-top: 14px; }
+.bs-label { font-size: 13px; font-weight: 700; color: #292633; margin-bottom: 6px; }
+.bs-text { font-size: 15px; color: #3a3642; line-height: 1.55; }
+.bs-mis .bs-label { color: #c13a44; }
+.bs-why .bs-label { color: #2f6fed; }
+.bs-fix .bs-label { color: #0f7a52; }
+.bs-focus .bs-label { color: #a26f1f; }
