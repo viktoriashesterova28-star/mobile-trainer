@@ -1994,7 +1994,7 @@ body {
 .answer-value { font-size: 17px; color: #292633; line-height: 1.5; }
 
 /* разбор — три полноширинные карточки */
-.breakdown-wrap { margin-bottom: 4px; }
+.breakdown-wrap { margin-bottom: 24px; }
 .breakdown-title { font-size: 15px; font-weight: 800; color: #292633; margin: 0 0 16px; }
 .bs-card {
   border: 1px solid #ded6e9;
