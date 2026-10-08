@@ -1992,31 +1992,43 @@ body {
 .answer-label { font-size: 13px; font-weight: 700; color: #292633; }
 .answer-value { font-size: 17px; color: #292633; line-height: 1.5; }
 
-/* разбор — три плашки */
+/* разбор — один широкий блок с тремя строками */
 .breakdown-wrap { margin-bottom: 4px; }
 .breakdown-title { font-size: 15px; font-weight: 800; color: #292633; margin: 0 0 14px; }
-.bs-grid { display: flex; gap: 14px; margin-bottom: 14px; }
-.bs-card {
-  flex: 1 1 0; min-width: 0;
-  border-radius: 14px; border: 1px solid;
-  padding: 20px;
+.breakdown-block {
+  border: 1px solid #ded6e9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
 }
-.bs-grid .bs-card { margin-top: 0; }
-.breakdown-wrap > .bs-card { margin-top: 14px; }
-.bs-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.bs-row { display: flex; }
+.bs-row + .bs-row { border-top: 1px solid #ded6e9; }
+.bs-left {
+  flex: 0 0 30%;
+  padding: 18px 16px;
+  display: flex; align-items: flex-start;
+}
+.bs-blue .bs-left { background: #eef5fc; }
+.bs-lilac .bs-left { background: #f3eff9; }
+.bs-green .bs-left { background: #eef7f1; }
+.bs-head { display: flex; align-items: center; gap: 8px; }
 .bs-ico { flex: none; width: 18px; height: 18px; }
 .bs-ico svg { width: 100%; height: 100%; display: block; }
-.bs-label { font-size: 14px; font-weight: 700; color: #292633; }
-.bs-text { font-size: 17px; color: #3a3642; line-height: 1.6; }
-.bs-blue { background: #eef5fc; border-color: #d4e3f5; }
 .bs-blue .bs-ico { color: #2f6fed; }
-.bs-lilac { background: #f3eff9; border-color: #dccfec; }
 .bs-lilac .bs-ico { color: #7151ad; }
-.bs-green { background: #eef7f1; border-color: #cbe5d6; }
 .bs-green .bs-ico { color: #397a52; }
+.bs-label { font-size: 16px; font-weight: 700; color: #292633; line-height: 1.3; }
+.bs-text {
+  flex: 0 0 70%;
+  padding: 18px 20px;
+  background: #ffffff;
+  font-size: 16px; color: #3a3642; line-height: 1.6;
+}
 
-/* узкий экран: карточки и плашки в столбик */
+/* узкий экран: строка разбора и карточки ответов в столбик */
 @media (max-width: 860px) {
   .answer-grid { flex-direction: column; }
-  .bs-grid { flex-direction: column; }
+  .bs-row { flex-direction: column; }
+  .bs-left { flex: none; width: 100%; }
+  .bs-text { flex: none; width: 100%; background: #ffffff; }
 }

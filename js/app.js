@@ -828,21 +828,35 @@
   function buildBreakdown(c) {
     var wrap = el("div", "breakdown-wrap");
     wrap.appendChild(el("div", "breakdown-title", "Разбираем текст"));
+    var block = el("div", "breakdown-block");
     var b = c.breakdown;
-    var sections = [];
+    var rows = [];
     if (b.rows) {
-      b.rows.forEach(function (r) { sections.push({ label: r.label, text: r.text, kind: r.kind }); });
+      b.rows.forEach(function (r) { rows.push({ label: r.label, text: r.text, kind: r.kind }); });
     } else {
-      sections.push({ label: "Что клиент может понять неверно", text: b.misconception, kind: "mis" });
-      sections.push({ label: "Почему это происходит", text: b.why, kind: "why" });
-      if (b.fix) sections.push({ label: "Как исправить", text: b.fix, kind: "fix" });
+      rows.push({ label: "Что клиент может понять неверно", text: b.misconception, kind: "mis" });
+      rows.push({ label: "Почему это происходит", text: b.why, kind: "why" });
+      if (b.fix) rows.push({ label: "Как исправить", text: b.fix, kind: "fix" });
     }
-    // первые две плашки рядом, остальные — на всю ширину
-    var grid = el("div", "bs-grid");
-    sections.slice(0, 2).forEach(function (s) { grid.appendChild(bsCard(s.label, s.text, s.kind)); });
-    wrap.appendChild(grid);
-    sections.slice(2).forEach(function (s) { wrap.appendChild(bsCard(s.label, s.text, s.kind)); });
+    rows.forEach(function (r) { block.appendChild(bsRow(r.label, r.text, r.kind)); });
+    wrap.appendChild(block);
     return wrap;
+  }
+
+  function bsRow(label, text, kind) {
+    var cls = kind === "why" ? "bs-lilac" : (kind === "fix" ? "bs-green" : "bs-blue");
+    var ico = kind === "why" ? ICONS.link : (kind === "fix" ? ICONS.pencil : ICONS.eye);
+    var row = el("div", "bs-row " + cls);
+    var left = el("div", "bs-left");
+    var head = el("div", "bs-head");
+    var i = el("span", "bs-ico");
+    i.innerHTML = ico;
+    head.appendChild(i);
+    head.appendChild(el("span", "bs-label", label));
+    left.appendChild(head);
+    row.appendChild(left);
+    row.appendChild(el("div", "bs-text", text));
+    return row;
   }
 
   function answerCard(label, value, kind) {
@@ -852,20 +866,6 @@
     head.appendChild(el("span", "answer-label", label));
     c.appendChild(head);
     c.appendChild(el("div", "answer-value", value));
-    return c;
-  }
-
-  function bsCard(label, text, kind) {
-    var cls = kind === "why" ? "bs-lilac" : (kind === "fix" ? "bs-green" : "bs-blue");
-    var ico = kind === "why" ? ICONS.link : (kind === "fix" ? ICONS.pencil : ICONS.eye);
-    var c = el("div", "bs-card " + cls);
-    var head = el("div", "bs-head");
-    var i = el("span", "bs-ico");
-    i.innerHTML = ico;
-    head.appendChild(i);
-    head.appendChild(el("span", "bs-label", label));
-    c.appendChild(head);
-    c.appendChild(el("div", "bs-text", text));
     return c;
   }
 
