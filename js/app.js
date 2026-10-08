@@ -642,7 +642,10 @@
   var ICONS = {
     doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 12h5"/><path d="M10 16h5"/></svg>',
     pick: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>',
-    com: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9.5L5 19v-3H4z"/></svg>'
+    com: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9.5L5 19v-3H4z"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>',
+    pencil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>'
   };
 
   function howRow(icon, title, text) {
@@ -771,35 +774,30 @@
     // прогресс (номер кейса + полоса)
     panel.appendChild(buildProgress(state.index, CASES.length));
 
-    // результат — крупный блок
+    // результат — компактная горизонтальная строка
     var correct = chosen.isCorrect;
     var hasDark = !!(c.breakdown && c.breakdown.fix);
-    var res = el("div", "result-block " + (correct ? "rb-correct" : "rb-wrong"));
-    res.appendChild(el("div", "result-icon", correct ? "✓" : "…"));
-    res.appendChild(el("div", "result-title", correct ? "Верно" : "Не совсем"));
-    res.appendChild(el("div", "result-caption", correct
+    var res = el("div", "result-row " + (correct ? "rr-correct" : "rr-wrong"));
+    res.appendChild(el("span", "result-ico", correct ? "✓" : "…"));
+    var resText = el("div", "result-text");
+    resText.appendChild(el("div", "result-title", correct ? "Верно" : "Не совсем"));
+    resText.appendChild(el("div", "result-caption", correct
       ? (hasDark ? "В тексте действительно есть этот прием" : "Текст корректен и не вводит клиента в заблуждение")
       : "Посмотрим, на что еще стоит обратить внимание"));
+    res.appendChild(resText);
     panel.appendChild(res);
 
-    // ответы после проверки
+    // сравнение ответов — две карточки рядом
+    var answerGrid = el("div", "answer-grid");
     if (correct) {
-      var ac = el("div", "answer-card answer-card-correct");
-      ac.appendChild(el("div", "answer-label", "Ваш ответ"));
-      ac.appendChild(el("div", "answer-value", chosen.text));
-      panel.appendChild(ac);
+      answerGrid.appendChild(answerCard("Ваш ответ", chosen.text, "correct"));
     } else {
-      var aw = el("div", "answer-card answer-card-wrong");
-      aw.appendChild(el("div", "answer-label", "Ваш ответ"));
-      aw.appendChild(el("div", "answer-value", chosen.text));
-      panel.appendChild(aw);
-      var ac2 = el("div", "answer-card answer-card-correct");
-      ac2.appendChild(el("div", "answer-label", "Правильный ответ"));
-      ac2.appendChild(el("div", "answer-value", correctOpt.text));
-      panel.appendChild(ac2);
+      answerGrid.appendChild(answerCard("Ваш ответ", chosen.text, "wrong"));
+      answerGrid.appendChild(answerCard("Правильный ответ", correctOpt.text, "correct"));
     }
+    panel.appendChild(answerGrid);
 
-    // разбор — один общий блок
+    // разбор — три плашки
     panel.appendChild(buildBreakdown(c));
 
     // кнопка «Следующий кейс»
@@ -828,24 +826,47 @@
   }
 
   function buildBreakdown(c) {
-    var block = el("div", "breakdown-block");
-    block.appendChild(el("div", "breakdown-title", "Разбираем текст"));
+    var wrap = el("div", "breakdown-wrap");
+    wrap.appendChild(el("div", "breakdown-title", "Разбираем текст"));
     var b = c.breakdown;
+    var sections = [];
     if (b.rows) {
-      b.rows.forEach(function (r) { block.appendChild(breakdownSection(r.label, r.text, r.kind)); });
+      b.rows.forEach(function (r) { sections.push({ label: r.label, text: r.text, kind: r.kind }); });
     } else {
-      block.appendChild(breakdownSection("Что клиент может понять неверно", b.misconception, "mis"));
-      block.appendChild(breakdownSection("Почему это происходит", b.why, "why"));
-      if (b.fix) block.appendChild(breakdownSection("Как исправить", b.fix, "fix"));
+      sections.push({ label: "Что клиент может понять неверно", text: b.misconception, kind: "mis" });
+      sections.push({ label: "Почему это происходит", text: b.why, kind: "why" });
+      if (b.fix) sections.push({ label: "Как исправить", text: b.fix, kind: "fix" });
     }
-    return block;
+    // первые две плашки рядом, остальные — на всю ширину
+    var grid = el("div", "bs-grid");
+    sections.slice(0, 2).forEach(function (s) { grid.appendChild(bsCard(s.label, s.text, s.kind)); });
+    wrap.appendChild(grid);
+    sections.slice(2).forEach(function (s) { wrap.appendChild(bsCard(s.label, s.text, s.kind)); });
+    return wrap;
   }
 
-  function breakdownSection(label, text, kind) {
-    var s = el("div", "bs-section" + (kind ? " bs-" + kind : ""));
-    s.appendChild(el("div", "bs-label", label));
-    s.appendChild(el("div", "bs-text", text));
-    return s;
+  function answerCard(label, value, kind) {
+    var c = el("div", "answer-card answer-card-" + kind);
+    var head = el("div", "answer-head");
+    head.appendChild(el("span", "answer-ico", kind === "correct" ? "✓" : "…"));
+    head.appendChild(el("span", "answer-label", label));
+    c.appendChild(head);
+    c.appendChild(el("div", "answer-value", value));
+    return c;
+  }
+
+  function bsCard(label, text, kind) {
+    var cls = kind === "why" ? "bs-lilac" : (kind === "fix" ? "bs-green" : "bs-blue");
+    var ico = kind === "why" ? ICONS.link : (kind === "fix" ? ICONS.pencil : ICONS.eye);
+    var c = el("div", "bs-card " + cls);
+    var head = el("div", "bs-head");
+    var i = el("span", "bs-ico");
+    i.innerHTML = ico;
+    head.appendChild(i);
+    head.appendChild(el("span", "bs-label", label));
+    c.appendChild(head);
+    c.appendChild(el("div", "bs-text", text));
+    return c;
   }
 
   // ============================================================================
