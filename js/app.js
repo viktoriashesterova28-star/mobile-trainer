@@ -834,8 +834,8 @@
     if (b.rows) {
       b.rows.forEach(function (r) { rows.push({ label: r.label, text: r.text, kind: r.kind }); });
     } else {
-      rows.push({ label: "Что клиент может понять неверно", text: b.misconception, kind: "mis" });
-      rows.push({ label: "Почему это происходит", text: b.why, kind: "why" });
+      rows.push({ label: "Что может понять клиент", text: b.misconception, kind: "mis" });
+      rows.push({ label: "В чем проблема", text: b.why, kind: "why" });
       if (b.fix) rows.push({ label: "Как исправить", text: b.fix, kind: "fix" });
     }
     rows.forEach(function (r) { block.appendChild(bsRow(r.label, r.text, r.kind)); });
