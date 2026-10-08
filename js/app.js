@@ -42,6 +42,21 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  // --- аналитика: Яндекс Метрика -------------------------------------------------
+  function track(name, data) {
+    try {
+      var mid = window.METRIKA_ID || "";
+      if (typeof window.ym === "function" && /^\d+$/.test(mid)) {
+        window.ym(mid, "reachGoal", name, data || {});
+      }
+    } catch (e) {}
+    try {
+      if (window.console && window.console.log) {
+        window.console.log("[metrika]", name, data || {});
+      }
+    } catch (e) {}
+  }
+
   function correctCount() {
     return state.answers.filter(function (a) { return a.correct; }).length;
   }
@@ -618,6 +633,7 @@
       state.index = 0;
       state.answers = [];
       state.currentSelected = -1;
+      track("start");
       renderQuiz();
     });
     actions.appendChild(goBtn);
@@ -683,6 +699,7 @@
     state.index = 0;
     state.answers = [];
     state.currentSelected = -1;
+    track("go_home");
     renderIntro();
   }
 
@@ -712,6 +729,7 @@
       return;
     }
 
+    track("case_view", { index: state.index + 1 });
     var c = CASES[state.index];
     var wrap = el("div", "screen layout");
 
@@ -760,6 +778,7 @@
   function selectOption(c, idx) {
     state.currentSelected = idx;
     state.answers.push({ caseId: c.id, selectedIndex: idx, correct: c.options[idx].isCorrect });
+    track(c.options[idx].isCorrect ? "answer_correct" : "answer_wrong", { caseId: c.id, index: state.index + 1 });
     renderAnswerView(c, idx);
   }
 
@@ -879,6 +898,7 @@
     var total = CASES.length;
     var correct = correctCount();
     var pct = Math.round(correct / total * 100);
+    track("finish", { correct: correct, total: total, pct: pct });
 
     var wrap = el("div", "screen");
     var panel = el("div", "results-panel");
@@ -957,6 +977,7 @@
   // 4. Опрос
   // ============================================================================
   function renderSurvey() {
+    track("survey_open");
     var wrap = el("div", "screen");
     var panel = el("div", "results-panel");
 
@@ -986,6 +1007,7 @@
     submit.addEventListener("click", function () {
       state.survey = state.survey || {};
       state.survey.comment = ta.value;
+      track("survey_submit", { rating: state.survey.rating || null, hasComment: !!(ta.value && ta.value.trim()) });
       renderThanks();
     });
     panel.appendChild(submit);
