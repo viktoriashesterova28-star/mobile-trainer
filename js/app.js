@@ -859,31 +859,44 @@
     wrap.appendChild(el("div", "breakdown-title", "Разбираем текст"));
     var block = el("div", "breakdown-block");
     var b = c.breakdown;
-    var rows = [];
+
     if (b.rows) {
-      b.rows.forEach(function (r) { rows.push({ label: r.label, text: r.text, kind: r.kind }); });
+      // кейс без дарк-паттерна: одна карточка «почему текст можно оставить»
+      b.rows.forEach(function (r) {
+        var card = el("div", "bs-card bs-green");
+        card.appendChild(el("div", "bs-label", r.label));
+        card.appendChild(el("p", "bs-text", r.text));
+        block.appendChild(card);
+      });
     } else {
-      rows.push({ label: "Что может понять клиент", text: b.misconception, kind: "mis" });
-      rows.push({ label: "В чем проблема", text: b.why, kind: "why" });
-      if (b.fix) rows.push({ label: "Как исправить", text: b.fix, kind: "fix" });
+      // 1. В чем проблема — вывод клиента, затем что создает впечатление
+      var pCard = el("div", "bs-card bs-lav");
+      pCard.appendChild(el("div", "bs-label", "В чем проблема"));
+      pCard.appendChild(el("p", "bs-text", b.misconception));
+      pCard.appendChild(el("p", "bs-text", b.why));
+      block.appendChild(pCard);
+
+      // 2. Как исправить — рекомендация, затем пример через разделитель
+      var fx = splitFix(b.fix);
+      var fCard = el("div", "bs-card bs-green");
+      fCard.appendChild(el("div", "bs-label", "Как исправить"));
+      if (fx.rec) fCard.appendChild(el("p", "bs-text", fx.rec));
+      if (fx.ex) fCard.appendChild(el("div", "bs-example", fx.ex));
+      block.appendChild(fCard);
     }
-    rows.forEach(function (r) { block.appendChild(bsRow(r.label, r.text, r.kind)); });
+
     wrap.appendChild(block);
     return wrap;
   }
 
-  function bsRow(label, text, kind) {
-    var cls = kind === "why" ? "bs-lilac" : (kind === "fix" ? "bs-green" : "bs-blue");
-    var ico = kind === "why" ? ICONS.link : (kind === "fix" ? ICONS.pencil : ICONS.eye);
-    var card = el("div", "bs-card " + cls);
-    var head = el("div", "bs-head");
-    var i = el("span", "bs-ico");
-    i.innerHTML = ico;
-    head.appendChild(i);
-    head.appendChild(el("span", "bs-label", label));
-    card.appendChild(head);
-    card.appendChild(el("div", "bs-text", text));
-    return card;
+  // отделяем рекомендацию от примера в тексте fix (пример — в «...»)
+  function splitFix(text) {
+    if (!text) return { rec: "", ex: null };
+    var idx = text.indexOf("«");
+    if (idx === -1) return { rec: text.trim(), ex: null };
+    var rec = text.slice(0, idx).replace(/[:\s]+$/, "").replace(/Например\s*$/, "").trim();
+    var ex = text.slice(idx).trim();
+    return { rec: rec, ex: ex };
   }
 
   // ============================================================================

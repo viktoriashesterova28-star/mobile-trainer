@@ -1974,29 +1974,26 @@ body {
 .result-body-label { font-size: 14px; font-weight: 700; color: #292633; }
 .result-body-text { font-size: 16px; color: #292633; line-height: 1.5; }
 
-/* разбор — три полноширинные карточки */
+/* разбор — карточки разбора */
 .breakdown-wrap { margin-bottom: 24px; }
 .breakdown-title { font-size: 15px; font-weight: 800; color: #292633; margin: 0 0 16px; }
 .bs-card {
+  border-radius: 16px;
   border: 1px solid #ded6e9;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #ffffff;
+  padding: 20px;
 }
-.bs-card + .bs-card { margin-top: 14px; }
-.bs-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; }
-.bs-blue .bs-head { background: #eef5fc; }
-.bs-lilac .bs-head { background: #f3eff9; }
-.bs-green .bs-head { background: #eef7f1; }
-.bs-ico { flex: none; width: 18px; height: 18px; }
-.bs-ico svg { width: 100%; height: 100%; display: block; }
-.bs-blue .bs-ico { color: #2f6fed; }
-.bs-lilac .bs-ico { color: #7151ad; }
-.bs-green .bs-ico { color: #397a52; }
-.bs-label { font-size: 16px; font-weight: 700; color: #292633; }
+.bs-card + .bs-card { margin-top: 16px; }
+.bs-lav { background: #f7f5fb; }
+.bs-green { background: #f1f8f4; }
+.bs-label { font-size: 16px; font-weight: 700; color: #292633; margin-bottom: 10px; }
 .bs-text {
-  padding: 18px 20px;
-  background: #ffffff;
+  font-size: 16px; color: #3a3642; line-height: 1.5;
+  margin: 0 0 10px;
+}
+.bs-text:last-child { margin-bottom: 0; }
+.bs-example {
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid #dcd4e6;
   font-size: 16px; color: #3a3642; line-height: 1.5;
 }
 
