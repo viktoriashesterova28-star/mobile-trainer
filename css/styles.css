@@ -1952,46 +1952,27 @@ body {
 .option { padding: 14px 40px 14px 14px; font-size: 17px; line-height: 1.45; }
 .option-key { width: 26px; height: 26px; font-size: 13px; }
 
-/* результат — компактная горизонтальная строка */
-.result-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid transparent;
-  margin-bottom: 18px;
+/* результат — полноширинные плашки после ответа */
+.result-plaque {
+  border-radius: 14px; border: 1px solid transparent;
+  padding: 20px;
+  margin-bottom: 16px;
 }
-.rr-correct { background: #eaf7ef; border-color: #9bcbad; }
-.rr-wrong { background: #fdecee; border-color: #e8a8b0; }
+.rp-correct { background: #eaf7ef; border-color: #9bcbad; }
+.rp-wrong { background: #fdecee; border-color: #e8a8b0; }
+.result-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .result-ico {
-  flex: none; width: 34px; height: 34px;
+  flex: none; width: 30px; height: 30px;
   border-radius: 50%; border: 2px solid;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: 800;
+  font-size: 15px; font-weight: 800;
 }
-.rr-correct .result-ico { border-color: #9bcbad; color: #397a52; }
-.rr-wrong .result-ico { border-color: #e8a8b0; color: #a74652; }
-.result-text { display: flex; flex-direction: column; gap: 2px; }
+.rp-correct .result-ico { border-color: #9bcbad; color: #397a52; }
+.rp-wrong .result-ico { border-color: #e8a8b0; color: #a74652; }
 .result-title { font-size: 18px; font-weight: 800; color: #292633; }
-.result-caption { font-size: 14px; color: #686273; line-height: 1.45; }
-
-/* сравнение ответов — карточки рядом */
-.answer-grid { display: flex; gap: 14px; margin-bottom: 22px; }
-.answer-card {
-  flex: 1 1 0; min-width: 0;
-  border-radius: 14px; border: 1px solid;
-  padding: 16px;
-}
-.answer-card-correct { background: #eaf7ef; border-color: #9bcbad; }
-.answer-card-wrong { background: #fdecee; border-color: #e8a8b0; }
-.answer-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.answer-ico {
-  flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid;
-  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
-}
-.answer-card-correct .answer-ico { border-color: #9bcbad; color: #397a52; }
-.answer-card-wrong .answer-ico { border-color: #e8a8b0; color: #a74652; }
-.answer-label { font-size: 13px; font-weight: 700; color: #292633; }
-.answer-value { font-size: 17px; color: #292633; line-height: 1.5; }
+.result-body { display: flex; flex-direction: column; gap: 4px; }
+.result-body-label { font-size: 14px; font-weight: 700; color: #292633; }
+.result-body-text { font-size: 16px; color: #292633; line-height: 1.5; }
 
 /* разбор — три полноширинные карточки */
 .breakdown-wrap { margin-bottom: 24px; }
@@ -2017,11 +1998,6 @@ body {
   padding: 18px 20px;
   background: #ffffff;
   font-size: 16px; color: #3a3642; line-height: 1.5;
-}
-
-/* узкий экран: карточки ответов в столбик */
-@media (max-width: 860px) {
-  .answer-grid { flex-direction: column; }
 }
 
 /* навигация в кейсе: «На главную» и «← Назад» */

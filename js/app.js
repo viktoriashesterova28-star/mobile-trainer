@@ -798,28 +798,33 @@
     // прогресс (номер кейса + полоса)
     panel.appendChild(buildProgress(state.index, CASES.length));
 
-    // результат — компактная горизонтальная строка
+    // результат — полноширинная плашка
     var correct = chosen.isCorrect;
-    var hasDark = !!(c.breakdown && c.breakdown.fix);
-    var res = el("div", "result-row " + (correct ? "rr-correct" : "rr-wrong"));
-    res.appendChild(el("span", "result-ico", correct ? "✓" : "…"));
-    var resText = el("div", "result-text");
-    resText.appendChild(el("div", "result-title", correct ? "Верно" : "Не совсем"));
-    resText.appendChild(el("div", "result-caption", correct
-      ? (hasDark ? "В тексте действительно есть этот прием" : "Текст корректен и не вводит клиента в заблуждение")
-      : "Посмотрим, на что еще стоит обратить внимание"));
-    res.appendChild(resText);
+
+    function resultHead(title, isCorrect) {
+      var head = el("div", "result-head");
+      head.appendChild(el("span", "result-ico", isCorrect ? "✓" : "…"));
+      head.appendChild(el("div", "result-title", title));
+      return head;
+    }
+
+    var res = el("div", "result-plaque " + (correct ? "rp-correct" : "rp-wrong"));
+    res.appendChild(resultHead(correct ? "Верно" : "Не совсем", correct));
+    var resBody = el("div", "result-body");
+    if (!correct) resBody.appendChild(el("div", "result-body-label", "Вы выбрали:"));
+    resBody.appendChild(el("div", "result-body-text", chosen.text));
+    res.appendChild(resBody);
     panel.appendChild(res);
 
-    // сравнение ответов — две карточки рядом
-    var answerGrid = el("div", "answer-grid");
-    if (correct) {
-      answerGrid.appendChild(answerCard("Ваш ответ", chosen.text, "correct"));
-    } else {
-      answerGrid.appendChild(answerCard("Ваш ответ", chosen.text, "wrong"));
-      answerGrid.appendChild(answerCard("Правильный ответ", correctOpt.text, "correct"));
+    // для неверного ответа — отдельная плашка «Правильный ответ»
+    if (!correct) {
+      var correctPlaque = el("div", "result-plaque rp-correct");
+      correctPlaque.appendChild(resultHead("Правильный ответ", true));
+      var correctBody = el("div", "result-body");
+      correctBody.appendChild(el("div", "result-body-text", correctOpt.text));
+      correctPlaque.appendChild(correctBody);
+      panel.appendChild(correctPlaque);
     }
-    panel.appendChild(answerGrid);
 
     // разбор — три плашки
     panel.appendChild(buildBreakdown(c));
@@ -879,16 +884,6 @@
     card.appendChild(head);
     card.appendChild(el("div", "bs-text", text));
     return card;
-  }
-
-  function answerCard(label, value, kind) {
-    var c = el("div", "answer-card answer-card-" + kind);
-    var head = el("div", "answer-head");
-    head.appendChild(el("span", "answer-ico", kind === "correct" ? "✓" : "…"));
-    head.appendChild(el("span", "answer-label", label));
-    c.appendChild(head);
-    c.appendChild(el("div", "answer-value", value));
-    return c;
   }
 
   // ============================================================================
