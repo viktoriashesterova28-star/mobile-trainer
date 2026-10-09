@@ -329,6 +329,32 @@
 
   function storyScreen(sd) {
     var screen = el("div", "fmt-screen fmt-screen-story");
+
+    // набор сторис (кейсы «три сторис») — стек карточек
+    if (sd.stories && sd.stories.length) {
+      var list = el("div", "story-list");
+      sd.stories.forEach(function (s) {
+        var card = el("div", "story-card");
+        var sHead = el("div", "story-card-head");
+        var ring = el("span", "story-ring");
+        ring.appendChild(el("span", "story-avatar", sd.icon || "✦"));
+        sHead.appendChild(ring);
+        var col = el("div", "story-id");
+        col.appendChild(el("div", "story-user", sd.app || ""));
+        col.appendChild(el("div", "story-time", "сейчас"));
+        sHead.appendChild(col);
+        sHead.appendChild(el("span", "story-more", "⋯"));
+        sHead.appendChild(el("span", "story-close", "×"));
+        card.appendChild(sHead);
+        var body = el("div", "story-card-body");
+        body.appendChild(el("div", "story-card-text", s));
+        card.appendChild(body);
+        list.appendChild(card);
+      });
+      screen.appendChild(list);
+      return screen;
+    }
+
     var prog = el("div", "story-progress");
     for (var i = 0; i < 4; i++) prog.appendChild(el("span", i === 0 ? "on" : (i === 1 ? "half" : "")));
     screen.appendChild(prog);
@@ -686,7 +712,7 @@
   // короткая «выжимка» разбора для списка результатов
   function breakdownTakeaway(b) {
     if (b.fix) return b.fix;
-    if (b.rows && b.rows.length) return b.rows[b.rows.length - 1].text;
+    if (b.ok) return b.ok;
     return "";
   }
 
@@ -859,20 +885,17 @@
     var block = el("div", "breakdown-block");
     var b = c.breakdown;
 
-    if (b.rows) {
-      // кейс без дарк-паттерна: одна карточка «почему текст можно оставить»
-      b.rows.forEach(function (r) {
-        var card = el("div", "bs-card bs-green");
-        card.appendChild(el("div", "bs-label", r.label));
-        card.appendChild(el("p", "bs-text", r.text));
-        block.appendChild(card);
-      });
+    if (b.ok) {
+      // корректное предложение: одна карточка «почему текст можно оставить»
+      var card = el("div", "bs-card bs-green");
+      card.appendChild(el("div", "bs-label", "Почему текст можно оставить"));
+      card.appendChild(el("p", "bs-text", b.ok));
+      block.appendChild(card);
     } else {
-      // 1. В чем проблема — вывод клиента, затем что создает впечатление
+      // 1. В чем проблема
       var pCard = el("div", "bs-card bs-lav");
       pCard.appendChild(el("div", "bs-label", "В чем проблема"));
-      pCard.appendChild(el("p", "bs-text", b.misconception));
-      pCard.appendChild(el("p", "bs-text", b.why));
+      pCard.appendChild(el("p", "bs-text", b.problem));
       block.appendChild(pCard);
 
       // 2. Как исправить — рекомендация, затем пример через разделитель
