@@ -803,7 +803,7 @@
 
     function resultHead(title, isCorrect) {
       var head = el("div", "result-head");
-      head.appendChild(el("span", "result-ico", isCorrect ? "✓" : "…"));
+      if (isCorrect) head.appendChild(el("span", "result-ico", "✓"));
       head.appendChild(el("div", "result-title", title));
       return head;
     }
@@ -811,7 +811,6 @@
     var res = el("div", "result-plaque " + (correct ? "rp-correct" : "rp-wrong"));
     res.appendChild(resultHead(correct ? "Верно" : "Не совсем", correct));
     var resBody = el("div", "result-body");
-    if (!correct) resBody.appendChild(el("div", "result-body-label", "Вы выбрали:"));
     resBody.appendChild(el("div", "result-body-text", chosen.text));
     res.appendChild(resBody);
     panel.appendChild(res);

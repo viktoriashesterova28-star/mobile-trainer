@@ -1968,15 +1968,13 @@ body {
   font-size: 15px; font-weight: 800;
 }
 .rp-correct .result-ico { border-color: #9bcbad; color: #397a52; }
-.rp-wrong .result-ico { border-color: #e8a8b0; color: #a74652; }
 .result-title { font-size: 18px; font-weight: 800; color: #292633; }
 .result-body { display: flex; flex-direction: column; gap: 4px; }
-.result-body-label { font-size: 14px; font-weight: 700; color: #292633; }
 .result-body-text { font-size: 16px; color: #292633; line-height: 1.5; }
 
 /* разбор — карточки разбора */
 .breakdown-wrap { margin-bottom: 24px; }
-.breakdown-title { font-size: 15px; font-weight: 800; color: #292633; margin: 0 0 16px; }
+.breakdown-title { font-size: 17px; font-weight: 900; color: #292633; margin: 0 0 16px; }
 .bs-card {
   border-radius: 16px;
   border: 1px solid #ded6e9;
